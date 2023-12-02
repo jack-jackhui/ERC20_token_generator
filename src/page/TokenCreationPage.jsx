@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 //const contractAddress = "0x8AC5D6d1E1c2A90E64547d4574b4efD2dFE05933"; //contract with no fees
 //const contractAddress = "0x0352e3Fb3C5f8a0856CCf59b0CE35C56714DD0a7" //contract charges a fee
 const contractAddresses = {
-    'Ethereum - Mainnet': '0x56Cc284191bdFEe6718dd1Df502640f65A38e723', // Address of the contract that charges a fee
+    'Ethereum - Mainnet': '0x667785BFc5ED2fd8Ec82fC128b376E2BBcA43966', // Address of the contract that charges a fee
     'Ethereum - Goerli': '0xb96f5A478204c9bbEC051e12Fc5160A1812601a8' // Address of the contract with no fees
 };
 export default function TokenCreationPage() {
@@ -46,20 +46,52 @@ export default function TokenCreationPage() {
     const [tokenAddress, setTokenAddress] = useState(null); // New state for token address
     const [selectedNetwork, setSelectedNetwork] = useState('Ethereum - Mainnet');
     const [creationFee, setCreationFee] = useState(null);
+    const defaultTokenDecimals = 18;
 
+    const NETWORK_PARAMS = {
+        'Ethereum - Mainnet': {
+            chainId: '0x1', // Hexadecimal representation of 1
+            chainName: 'Ethereum Mainnet',
+            // Add other required network parameters like rpcUrls, nativeCurrency, etc.
+        },
+        'Ethereum - Goerli': {
+            chainId: '0x5', // Hexadecimal representation of 5
+            chainName: 'Goerli Test Network',
+            // Add other required network parameters
+        }
+    };
     // Function to handle network change
-    const handleNetworkChange = (event) => {
+    const handleNetworkChange = async (event) => {
         const newNetwork = event.target.value;
         setSelectedNetwork(newNetwork);
 
-        // If the selected network is Mainnet, enable the button directly
-        if (newNetwork === "Ethereum - Mainnet") {
-            setIsCreateButtonDisabled(false);
-            setSnackbarMessage('Note: Gas fee estimation is not available for Mainnet. A predefined gas limit will be used.');
-            setOpenSnackbar(true);
-        } else {
-            // For other networks, reset the button state
-            setIsCreateButtonDisabled(true);
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const network = await provider.getNetwork();
+
+            if (network.chainId.toString(16) !== NETWORK_PARAMS[newNetwork].chainId) {
+                await provider.send("wallet_switchEthereumChain", [{ chainId: NETWORK_PARAMS[newNetwork].chainId }]);
+                // Optionally, update UI to reflect the network change
+                if (newNetwork === "Ethereum - Mainnet") {
+                    setIsCreateButtonDisabled(false);
+                    setSnackbarMessage('Note: Gas fee estimation is not available for Mainnet. A predefined gas limit will be used.');
+                    setOpenSnackbar(true);
+                } else {
+                    // For other networks, reset the button state
+                    setIsCreateButtonDisabled(true);
+                }
+            }
+        } catch (error) {
+            if (error.code === 4902) {
+                // This error code means the network is not available in the user's wallet, and you need to add it
+                try {
+                    await provider.send("wallet_addEthereumChain", [NETWORK_PARAMS[newNetwork]]);
+                } catch (addError) {
+                    console.error("Error adding Ethereum chain:", addError);
+                }
+            } else {
+                console.error("Error switching Ethereum chain:", error);
+            }
         }
     };
 
@@ -414,7 +446,7 @@ export default function TokenCreationPage() {
                                 FormHelperTextProps={{style: textFieldStyles.helperText}}
                                 label="Token Decimals"
                                 type="number"
-                                {...register("tokenDecimals", {required: true, valueAsNumber: true})}
+                                {...register("tokenDecimals", {required: true, valueAsNumber: true, value: defaultTokenDecimals })}
                                 error={!!errors.tokenDecimals}
                                 helperText={errors.tokenDecimals ? "Enter an integer value" : ""}
                             />
@@ -438,6 +470,7 @@ export default function TokenCreationPage() {
                             />
 
                             {/* Max Supply */}
+                            {/*
                             <TextField
                                 InputLabelProps={{style: textFieldStyles.label}}
                                 InputProps={{
@@ -454,6 +487,7 @@ export default function TokenCreationPage() {
                                 error={!!errors.maxSupply}
                                 helperText={errors.maxSupply ? "Enter an integer value" : ""}
                             />
+                            */}
                             <Button variant="outlined" onClick={calculateGasEstimate}
                                     disabled={isEstimating}
                                     sx={{color: 'white', backgroundColor: 'blue', borderRadius: '10px', marginBottom: '10px'}}
