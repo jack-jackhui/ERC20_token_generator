@@ -1,0 +1,13 @@
+.navbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    /* Add other styling as needed (background, height, etc.) */
+}
+
+.navbarContent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Add additional styling if needed */
+}
