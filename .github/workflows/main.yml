@@ -20,9 +20,9 @@ jobs:
       run: npm run build
     - name: Deploy
       run: |
-        git checkout release
+        git checkout release-branch
         git rm -rf .
         cp -r dist/* .
         git add .
         git commit -m "Deploy new build"
-        git push origin release
+        git push origin release-branch
