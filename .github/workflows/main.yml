@@ -29,4 +29,4 @@ jobs:
         cp -r dist/* .
         git add .        
         git commit -m "Deploy new build"
-        git push origin release-branch
+        git push -f origin release-branch
