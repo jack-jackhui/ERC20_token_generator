@@ -31,4 +31,4 @@ jobs:
             npm run build # we build our app
             sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
-            sudo rm -rf /home/ubuntu/ERC20_token_generator
+            #sudo rm -rf /home/ubuntu/ERC20_token_generator
