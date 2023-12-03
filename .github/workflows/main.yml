@@ -21,13 +21,13 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ERC20-token-generator # we move into our app's folder
+            cd ERC20_token_generator # we move into our app's folder
             git fetch --all
             git reset --hard origin/main
             git clean -f -d
             npm prune # we remove any unused dependencies
             npm install # we install any missing dependencies
             npm run build # we build our app
-            sudo cp -R /home/ubuntu/ERC20-token-generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
+            sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
-            sudo rm -rf /home/ubuntu/ERC20-token-generator
+            sudo rm -rf /home/ubuntu/ERC20_token_generator
