@@ -26,5 +26,10 @@ jobs:
         git rm -rf .
         cp -r dist/* .
         git add .
+        
+        # Configure user name and email for git
+        git config user.name "jack-jackhui"     
+        git config user.email "jack_hui@msn.com"
+
         git commit -m "Deploy new build"
         git push origin release-branch
