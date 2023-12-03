@@ -22,14 +22,11 @@ jobs:
       run: npm run build
     - name: Deploy
       run: |
+        git config user.name "jack-jackhui"     
+        git config user.email "jack_hui@msn.com"
         git checkout release-branch
         git rm -rf .
         cp -r dist/* .
-        git add .
-        
-        # Configure user name and email for git
-        git config user.name "jack-jackhui"     
-        git config user.email "jack_hui@msn.com"
-
+        git add .        
         git commit -m "Deploy new build"
         git push origin release-branch
