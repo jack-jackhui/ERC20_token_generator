@@ -21,6 +21,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            git clone https://github.com/jack-jackhui/ERC20_token_generator.git
             cd ERC20_token_generator # we move into our app's folder
             git fetch --all
             git reset --hard origin/main
@@ -30,4 +31,4 @@ jobs:
             npm run build # we build our app
             sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
-            sudo rm -rf /home/ubuntu/ERC20_token_generator/*
+            sudo rm -rf /home/ubuntu/ERC20_token_generator
