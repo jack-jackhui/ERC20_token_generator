@@ -72,7 +72,7 @@ const wagmiConfig = createConfig({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <Router>
+        <Router basename="/ERC20-Token-Generator">
             <WagmiConfig config={wagmiConfig}>
                 <RainbowKitProvider chains={chains} theme={midnightTheme()} coolMode>
                     <App/>
