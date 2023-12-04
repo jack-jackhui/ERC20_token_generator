@@ -31,7 +31,7 @@ jobs:
 
             # Setup Node.js environment
             source $HOME/.nvm/nvm.sh
-            nvm use 18 || nvm install 18
+            nvm use 21 || nvm install 21
 
             # Setup .env file
             echo "VITE_ALCHEMY_ID=${{ secrets.VITE_ALCHEMY_ID }}" > .env
