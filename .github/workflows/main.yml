@@ -9,19 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ssh-key: ${{ secrets.SSH_PRIV_KEY }}
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          eval "$(ssh-agent -s)"
-          echo "${{ secrets.SSH_PRIV_KEY }}" | tr -d '\r' | ssh-add -
+          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
       
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
