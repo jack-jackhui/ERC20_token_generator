@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ssh-key: ${{ secrets.KEY }}
+          ssh-key: ${{ secrets.SSH_PRIV_KEY }}
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
         with:
