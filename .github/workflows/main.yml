@@ -16,9 +16,12 @@ jobs:
 
       - name: Setup SSH
         run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           eval "$(ssh-agent -s)"
           echo "${{ secrets.SSH_PRIV_KEY }}" | tr -d '\r' | ssh-add -
           ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
       
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
