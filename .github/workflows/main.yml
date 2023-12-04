@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v2
-
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.KEY }}
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
         with:
@@ -25,7 +27,7 @@ jobs:
               cd ERC20_token_generator
               git pull origin main
             else
-              git clone https://github.com/your-username/ERC20_token_generator.git
+              git clone git@github.com:jack-jackhui/ERC20_token_generator.git
               cd ERC20_token_generator
             fi
 
