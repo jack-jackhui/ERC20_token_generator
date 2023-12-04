@@ -23,10 +23,13 @@ jobs:
           script: |
             # git clone https://github.com/jack-jackhui/ERC20_token_generator.git
             cd ERC20_token_generator # we move into our app's folder
+            rm -rf node_modules
             git fetch --all
             git reset --hard origin/main
             git clean -f -d
             npm prune # we remove any unused dependencies
+            npm uninstall vite
+            npm install --save-dev vite
             npm install # we install any missing dependencies
             npm run build # we build our app
             sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
