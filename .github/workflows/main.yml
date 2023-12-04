@@ -44,3 +44,4 @@ jobs:
             # Copy the build to the web server directory
             sudo cp -R dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
+            sudo rm -rf $HOME/ERC20_token_generator
