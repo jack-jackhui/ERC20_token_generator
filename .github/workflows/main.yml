@@ -16,7 +16,7 @@ jobs:
 
       - name: Setup SSH
         run: |
-          mkdir -p ~/.ssh
+          eval "$(ssh-agent -s)"
           echo "${{ secrets.SSH_PRIV_KEY }}" | tr -d '\r' | ssh-add -
           ssh-keyscan github.com >> ~/.ssh/known_hosts
       
