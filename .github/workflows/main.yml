@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Latest Stable Node.js
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v2
         with:
-          node-version: 'node'
+          node-version: '18.x'
 
       - name: Install Dependencies
         run: |
