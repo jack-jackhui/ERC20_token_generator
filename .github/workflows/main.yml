@@ -8,15 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-      
+    steps:    
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
         with:
@@ -26,6 +18,8 @@ jobs:
           port: ${{ secrets.PORT }}
           private-key: ${{ secrets.SSH_PRIV_KEY }}
           script: |
+            eval $(ssh-agent -s)
+            ssh-add ~/.ssh/github_private_key
             # Clone the repository or pull the latest changes
             cd /home/ubuntu
             if [ -d ERC20_token_generator ]; then
