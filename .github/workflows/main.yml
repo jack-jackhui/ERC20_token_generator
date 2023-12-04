@@ -16,6 +16,11 @@ jobs:
         with:
           node-version: '18.x'
 
+      - name: Setup .env file
+        run: |
+          echo "VITE_ALCHEMY_ID=${{ secrets.VITE_ALCHEMY_ID }}" >> .env
+          echo "VITE_WALLET_CONNECT_ID=${{ secrets.VITE_WALLET_CONNECT_ID }}" >> .env
+
       - name: Install Dependencies
         run: |
           npm prune
