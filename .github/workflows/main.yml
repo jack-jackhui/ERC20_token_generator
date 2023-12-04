@@ -11,26 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.x'
-
-      - name: Setup .env file
-        run: |
-          echo "VITE_ALCHEMY_ID=${{ secrets.VITE_ALCHEMY_ID }}" >> .env
-          echo "VITE_WALLET_CONNECT_ID=${{ secrets.VITE_WALLET_CONNECT_ID }}" >> .env
-
-      - name: Install Dependencies
-        run: |
-          npm prune
-          npm uninstall vite
-          npm install --save-dev vite
-          npm install
-
-      - name: Build Application
-        run: npm run build
-
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
         with:
@@ -39,10 +19,27 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ERC20_token_generator
-            git fetch --all
-            git reset --hard origin/main
-            git clean -f -d
-            sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
+            # Clone the repository or pull the latest changes
+            cd /home/ubuntu
+            if [ -d ERC20_token_generator ]; then
+              cd ERC20_token_generator
+              git pull origin main
+            else
+              git clone https://github.com/your-username/ERC20_token_generator.git
+              cd ERC20_token_generator
+            fi
+
+            # Setup Node.js environment
+            nvm use 18 || nvm install 18
+
+            # Setup .env file
+            echo "VITE_ALCHEMY_ID=${{ secrets.VITE_ALCHEMY_ID }}" > .env
+            echo "VITE_WALLET_CONNECT_ID=${{ secrets.VITE_WALLET_CONNECT_ID }}" >> .env
+
+            # Install dependencies and build
+            npm install
+            npm run build
+
+            # Copy the build to the web server directory
+            sudo cp -R dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
-            #sudo rm -rf /home/ubuntu/ERC20_token_generator
