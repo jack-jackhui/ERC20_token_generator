@@ -30,6 +30,7 @@ jobs:
             fi
 
             # Setup Node.js environment
+            source $HOME/.nvm/nvm.sh
             nvm use 18 || nvm install 18
 
             # Setup .env file
