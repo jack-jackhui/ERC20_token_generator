@@ -3,35 +3,41 @@ name: Deploy to Oracle Cloud Server
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
-    
   deploy:
     runs-on: ubuntu-latest
-    #needs: build-test # this job depends on "build-test" having finished
-    if: github.ref == 'refs/heads/main' # we tell Github to only execute this step if we're on our master branch (so we don't put unfinished branches in production)
+    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Deploying to Oracle cloud VM
-        uses: appleboy/ssh-action@master # An action made to control Linux servers
-        with: # We set all our secrets here for the action, these won't be shown in the action logs
+      - uses: actions/checkout@v2
+
+      - name: Use Latest Stable Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'node'
+
+      - name: Install Dependencies
+        run: |
+          npm prune
+          npm uninstall vite
+          npm install --save-dev vite
+          npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Deploy to Oracle Cloud Server
+        uses: appleboy/ssh-action@master
+        with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_HOST_USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # git clone https://github.com/jack-jackhui/ERC20_token_generator.git
-            cd ERC20_token_generator # we move into our app's folder
-            rm -rf node_modules
+            cd ERC20_token_generator
             git fetch --all
             git reset --hard origin/main
             git clean -f -d
-            npm prune # we remove any unused dependencies
-            npm uninstall vite
-            npm install --save-dev vite
-            npm install # we install any missing dependencies
-            npm run build # we build our app
             sudo cp -R /home/ubuntu/ERC20_token_generator/dist/* /var/www/jackhui.com.au/html/ERC20-token-generator/
             sudo chown -R www-data:www-data /var/www/jackhui.com.au/html/ERC20-token-generator/
             #sudo rm -rf /home/ubuntu/ERC20_token_generator
