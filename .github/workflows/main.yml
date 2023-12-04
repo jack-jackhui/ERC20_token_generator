@@ -9,10 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ssh-key: ${{ secrets.SSH_PRIV_KEY }}
       - name: Deploy to Oracle Cloud Server
         uses: appleboy/ssh-action@master
         with:
@@ -20,9 +16,8 @@ jobs:
           username: ${{ secrets.DEPLOY_HOST_USERNAME }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
+          ssh-key: ${{ secrets.SSH_PRIV_KEY }}
           script: |
-            # Add GitHub.com to known hosts
-            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             # Clone the repository or pull the latest changes
             cd /home/ubuntu
             if [ -d ERC20_token_generator ]; then
