@@ -21,6 +21,8 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            # Add GitHub.com to known hosts
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             # Clone the repository or pull the latest changes
             cd /home/ubuntu
             if [ -d ERC20_token_generator ]; then
